@@ -4,64 +4,165 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] float moveSpeed;
+    public enum State {Idle, Walk, Attack, Size}
+    private IPlayerState curState;
+    public float moveSpeed;
+    public Rigidbody2D rb;
+    public Animator animator;
+
+    // 너무.. 많아..
+    private static int walkRightHash = Animator.StringToHash("Walk_Right");
+    private static int walkUpRightHash = Animator.StringToHash("Walk_UpRight");
+    private static int walkUpHash = Animator.StringToHash("Walk_Up");
+    private static int walkUpLeftHash = Animator.StringToHash("Walk_UpLeft");
+    private static int walkLeftHash = Animator.StringToHash("Walk_Left");
+    private static int walkDownLeftHash = Animator.StringToHash("Walk_DownLeft");
+    private static int walkDownHash = Animator.StringToHash("Walk_Down");
+    private static int walkDownRightHash = Animator.StringToHash("Walk_DownRight");
+
+
     [SerializeField] Sprite[] directionSprites = new Sprite[8];
-    private SpriteRenderer spriteRenderer;
-    private Rigidbody2D rb;
+    [SerializeField] AnimationClip[] animations = new AnimationClip[8];
+
+    //private SpriteRenderer spriteRenderer;
+    private IPlayerState[] states = new IPlayerState[(int)State.Size];
+    private int lastDirectionIndex = 0;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        
     }
 
 
     private void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+
+        states[(int)State.Idle] = new IdleState(this);
+        states[(int)State.Walk] = new WalkState(this);
+        //states[(int)State.Attack] = new AttackState(this);
+        //spriteRenderer = GetComponent<SpriteRenderer>();
+
+
+        curState = states[(int)State.Idle];
+        curState.Enter();
+        Debug.Log("첫 IDLE 상태 진입");
+
+
+        
     }
 
     private void Update()
     {
+        curState.Update();
         if(Input.GetMouseButtonDown(0))
         {
-            LookAtMouse();
+            Debug.Log("마우스 입력");
+            //LookAtMouse();
         }
-        Move();
+        //Move();
         
     }
 
-    private void Move()
+    public void SetState(State newState)
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-
-        Vector2 moveDirection = new Vector2(horizontalInput, verticalInput).normalized;
-
-        
-
-        // 좌표에 맞는 스프라이트로 변경
-        if(moveDirection != Vector2.zero)
+        if(curState != null)
         {
-            float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
-            int spriteIndex = GetSpriteIndex(angle);
-            spriteRenderer.sprite = directionSprites[spriteIndex];
+            curState.Exit();
         }
-        rb.velocity = moveDirection * moveSpeed;
+
+        if(newState == State.Idle)
+        {
+            curState = states[(int)newState];
+            ((IdleState)curState).SetLastDirectionIndex(lastDirectionIndex);
+            
+        }
+        else
+        {
+            curState = states[(int)newState];
+        }
+
+        curState.Enter();
     }
 
-
-    private void LookAtMouse()
+    public void SetLastDirectionIndex(int directionIndex)
     {
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 direction = (mousePosition - transform.position).normalized;
-
-        // 좌표를 라디안으로 변환
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        int spriteIndex = GetSpriteIndex(angle);
-
-        // 좌표에 맞는 스프라이트로 변경
-        spriteRenderer.sprite = directionSprites[spriteIndex];
+        lastDirectionIndex = directionIndex;
     }
+
+    public void PlayAnimation(int index)
+    {
+        if(index >= 0 && index < animations.Length)
+        {
+            switch (index)
+            {
+                case 0:
+                    animator.Play(walkRightHash);
+                    break;
+                case 1:
+                    animator.Play(walkUpRightHash);
+                    break;
+                case 2:
+                    animator.Play(walkUpHash);
+                    break;
+                case 3:
+                    animator.Play(walkUpLeftHash);
+                    break;
+                case 4:
+                    animator.Play(walkLeftHash);
+                    break;
+                case 5:
+                    animator.Play(walkDownLeftHash);
+                    break;
+                case 6:
+                    animator.Play(walkDownHash);
+                    break;
+                case 7:
+                    animator.Play(walkDownRightHash);
+                    break;
+            }
+        }
+    }
+
+    //public void Move()
+    //{
+    //    float horizontalInput = Input.GetAxis("Horizontal");
+    //    float verticalInput = Input.GetAxis("Vertical");
+
+    //    Vector2 moveDirection = new Vector2(horizontalInput, verticalInput).normalized;
+
+        
+
+    //    // 좌표에 맞는 스프라이트로 변경
+    //    if(moveDirection != Vector2.zero)
+    //    {
+    //        float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+    //        int spriteIndex = GetSpriteIndex(angle);
+    //        spriteRenderer.sprite = directionSprites[spriteIndex];
+    //        animator.Play(animations[spriteIndex].name);
+    //    }
+    //    rb.velocity = moveDirection * moveSpeed;
+
+    //    if (moveDirection == Vector2.zero)
+    //    {
+    //        // 이전 스프라이트를 유지
+    //    }
+    //}
+
+
+    //private void LookAtMouse()
+    //{
+    //    Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    //    Vector2 direction = (mousePosition - transform.position).normalized;
+
+    //    // 좌표를 라디안으로 변환
+    //    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+    //    int spriteIndex = GetSpriteIndex(angle);
+
+    //    // 좌표에 맞는 스프라이트로 변경
+    //    spriteRenderer.sprite = directionSprites[spriteIndex];
+    //}
 
     
 
