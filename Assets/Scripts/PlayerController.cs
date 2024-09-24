@@ -35,10 +35,18 @@ public class PlayerController : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        Vector2 moveDirection = new Vector2(horizontalInput, verticalInput);
+        Vector2 moveDirection = new Vector2(horizontalInput, verticalInput).normalized;
 
+        
+
+        // 좌표에 맞는 스프라이트로 변경
+        if(moveDirection != Vector2.zero)
+        {
+            float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+            int spriteIndex = GetSpriteIndex(angle);
+            spriteRenderer.sprite = directionSprites[spriteIndex];
+        }
         rb.velocity = moveDirection * moveSpeed;
-
     }
 
 
@@ -54,6 +62,8 @@ public class PlayerController : MonoBehaviour
         // 좌표에 맞는 스프라이트로 변경
         spriteRenderer.sprite = directionSprites[spriteIndex];
     }
+
+    
 
     // 8 방향에 대한 스프라이트 index를 반환
     private int GetSpriteIndex(float angle)
