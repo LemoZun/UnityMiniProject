@@ -7,6 +7,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float moveSpeed;
     [SerializeField] Sprite[] directionSprites = new Sprite[8];
     private SpriteRenderer spriteRenderer;
+    private Rigidbody2D rb;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
 
 
     private void Start()
@@ -20,8 +26,21 @@ public class PlayerController : MonoBehaviour
         {
             LookAtMouse();
         }
+        Move();
         
     }
+
+    private void Move()
+    {
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+
+        Vector2 moveDirection = new Vector2(horizontalInput, verticalInput);
+
+        rb.velocity = moveDirection * moveSpeed;
+
+    }
+
 
     private void LookAtMouse()
     {
