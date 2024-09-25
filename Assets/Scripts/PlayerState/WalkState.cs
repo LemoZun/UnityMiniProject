@@ -15,6 +15,7 @@ public class WalkState : IPlayerState
     public void Enter()
     {
         Debug.Log("WALK 상태 진입");
+        player.animator.enabled = true;
         //player.animator.SetBool("isWalking", true);
     }
 
@@ -47,7 +48,9 @@ public class WalkState : IPlayerState
             player.rb.velocity = moveDirection * player.moveSpeed;
             float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
             int directionIndex = GetDirectionIndex(angle);
-            player.PlayAnimation(directionIndex);
+            player.PlayWalkAnimation(directionIndex);
+
+            player.SetLastDirectionIndex(directionIndex);
         }
         else
         {
@@ -55,11 +58,11 @@ public class WalkState : IPlayerState
             
         }
 
-        if (moveDirection == Vector2.zero)
-        {
-            player.SetState(PlayerController.State.Idle);
-            // 이전 스프라이트를 유지
-        }
+        //if (moveDirection == Vector2.zero)
+        //{
+        //    player.SetState(PlayerController.State.Idle);
+        //    // 이전 스프라이트를 유지
+        //}
     }
     public int GetLastDirectionIndex()
     {

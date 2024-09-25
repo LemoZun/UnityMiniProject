@@ -22,6 +22,9 @@ public class IdleState : IPlayerState
     public void Enter()
     {
         Debug.Log("Idle 상태 진입");
+        player.animator.enabled = false;
+        player.rb.velocity = Vector2.zero;
+        player.PlayIdleSprite(lastDirectionIndex);
     }
     public void Update()
     {

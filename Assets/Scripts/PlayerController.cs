@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public enum State {Idle, Walk, Attack, Size}
+    private IPlayerState[] states = new IPlayerState[(int)State.Size];
     private IPlayerState curState;
     public float moveSpeed;
     public Rigidbody2D rb;
@@ -23,9 +24,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] Sprite[] directionSprites = new Sprite[8];
     [SerializeField] AnimationClip[] animations = new AnimationClip[8];
+    private SpriteRenderer spriteRenderer;
 
-    //private SpriteRenderer spriteRenderer;
-    private IPlayerState[] states = new IPlayerState[(int)State.Size];
     private int lastDirectionIndex = 0;
 
     private void Awake()
@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour
         states[(int)State.Idle] = new IdleState(this);
         states[(int)State.Walk] = new WalkState(this);
         //states[(int)State.Attack] = new AttackState(this);
-        //spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
 
         curState = states[(int)State.Idle];
@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour
         lastDirectionIndex = directionIndex;
     }
 
-    public void PlayAnimation(int index)
+    public void PlayWalkAnimation(int index)
     {
         if(index >= 0 && index < animations.Length)
         {
@@ -124,6 +124,15 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+    public void PlayIdleSprite(int index)
+    {
+        if(index >= 0 && index < directionSprites.Length)
+        {
+            spriteRenderer.sprite = directionSprites[index];
+        }
+    }
+
 
     //public void Move()
     //{
