@@ -38,6 +38,21 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: BackGround
+    uniqueID: 4021114627
+    locked: 0
+  - name: Ground
+    uniqueID: 1128090789
+    locked: 0
+  - name: ForeGround
+    uniqueID: 3983746323
+    locked: 0
+  - name: DangerZone
+    uniqueID: 651848441
+    locked: 0
+  - name: Player
+    uniqueID: 2048337629
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
