@@ -19,6 +19,7 @@ public class AttackState : IPlayerState
 
     public void Enter()
     {
+        player.rb.velocity = Vector2.zero;
         Debug.Log("Attack");
         
         if(isAttacking)
