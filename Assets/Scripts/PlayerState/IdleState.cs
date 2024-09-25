@@ -36,10 +36,10 @@ public class IdleState : IPlayerState
         }
 
         //°ø°Ý½Ã
-        //if (Input.GetMouseButtonDown(0))
-        //{
-        //    player.SetState(PlayerController.State.Attack);
-        //}
+        if (Input.GetMouseButtonDown(0))
+        {
+            player.SetState(PlayerController.State.Attack);
+        }
     }
 
     public void Exit()

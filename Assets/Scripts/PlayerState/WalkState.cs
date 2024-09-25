@@ -35,7 +35,7 @@ public class WalkState : IPlayerState
         //player.animator.SetBool("isWalking", false);
     }
 
-    public void Walk()
+    private void Walk()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");

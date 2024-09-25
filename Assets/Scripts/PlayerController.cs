@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
 
         states[(int)State.Idle] = new IdleState(this);
         states[(int)State.Walk] = new WalkState(this);
-        //states[(int)State.Attack] = new AttackState(this);
+        states[(int)State.Attack] = new AttackState(this);
         spriteRenderer = GetComponent<SpriteRenderer>();
 
 
@@ -103,6 +103,29 @@ public class PlayerController : MonoBehaviour
         curState.Enter();
     }
 
+    public void SetState(State newState, int direction)
+    {
+        if (curState != null)
+        {
+            curState.Exit();
+        }
+
+        if (newState == State.Idle)
+        {
+            curState = states[(int)newState];
+            ((IdleState)curState).SetLastDirectionIndex(direction);
+
+        }
+        else
+        {
+            curState = states[(int)newState];
+        }
+
+        curState.Enter();
+    }
+
+
+
     public void SetLastDirectionIndex(int directionIndex)
     {
         lastDirectionIndex = directionIndex;
@@ -132,22 +155,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //private void LookAtMouse()
-    //{
-    //    Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    //    Vector2 direction = (mousePosition - transform.position).normalized;
+    private void LookAtMouse()
+    {
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 direction = (mousePosition - transform.position).normalized;
 
-    //    // 좌표를 라디안으로 변환
-    //    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-    //    int spriteIndex = GetSpriteIndex(angle);
+        // 좌표를 라디안으로 변환
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        int spriteIndex = GetSpriteIndex(angle);
 
-    //    // 좌표에 맞는 스프라이트로 변경
-    //    spriteRenderer.sprite = directionSprites[spriteIndex];
-    //}
+        // 좌표에 맞는 스프라이트로 변경
+        spriteRenderer.sprite = directionSprites[spriteIndex];
+    }
 
 
     // 8 방향에 대한 스프라이트 index를 반환
-    private int GetSpriteIndex(float angle)
+    public int GetSpriteIndex(float angle)
     {
         if (angle >= -22.5f && angle < 22.5f)
             return 0; // 우
