@@ -12,6 +12,10 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
 
     [SerializeField] Sprite[] directionSprites = new Sprite[8];
+
+
+
+
     [SerializeField] AnimationClip[] animations = new AnimationClip[8];
 
     private
@@ -123,8 +127,18 @@ public class PlayerController : MonoBehaviour
 
         curState.Enter();
     }
-
-
+    public Sprite GetSprite(int index)
+    {
+        if (index >= 0 && index < directionSprites.Length)
+        {
+            return directionSprites[index];
+        }
+        else
+        {
+            Debug.LogError("잘못된 인덱스");
+            return null;
+        }
+    }
 
     public void SetLastDirectionIndex(int directionIndex)
     {
