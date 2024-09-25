@@ -4,26 +4,43 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public enum State {Idle, Walk, Attack, Size}
+    public enum State { Idle, Walk, Attack, Size }
     private IPlayerState[] states = new IPlayerState[(int)State.Size];
     private IPlayerState curState;
     public float moveSpeed;
     public Rigidbody2D rb;
     public Animator animator;
 
-    // 너무.. 많아..
-    private static int walkRightHash = Animator.StringToHash("Walk_Right");
-    private static int walkUpRightHash = Animator.StringToHash("Walk_UpRight");
-    private static int walkUpHash = Animator.StringToHash("Walk_Up");
-    private static int walkUpLeftHash = Animator.StringToHash("Walk_UpLeft");
-    private static int walkLeftHash = Animator.StringToHash("Walk_Left");
-    private static int walkDownLeftHash = Animator.StringToHash("Walk_DownLeft");
-    private static int walkDownHash = Animator.StringToHash("Walk_Down");
-    private static int walkDownRightHash = Animator.StringToHash("Walk_DownRight");
-
-
     [SerializeField] Sprite[] directionSprites = new Sprite[8];
     [SerializeField] AnimationClip[] animations = new AnimationClip[8];
+
+    private
+    int[] walkHash = new int[]
+    {
+        Animator.StringToHash("Walk_Right"),
+        Animator.StringToHash("Walk_UpRight"),
+        Animator.StringToHash("Walk_Up"),
+        Animator.StringToHash("Walk_UpLeft"),
+        Animator.StringToHash("Walk_Left"),
+        Animator.StringToHash("Walk_DownLeft"),
+        Animator.StringToHash("Walk_Down"),
+        Animator.StringToHash("Walk_DownRight")
+    };
+
+    private int[] attackHash = new int[]
+    {
+        Animator.StringToHash("Normal_Attack_000"),
+        Animator.StringToHash("Normal_Attack_045"),
+        Animator.StringToHash("Normal_Attack_090"),
+        Animator.StringToHash("Normal_Attack_135"),
+        Animator.StringToHash("Normal_Attack_180"),
+        Animator.StringToHash("Normal_Attack_225"),
+        Animator.StringToHash("Normal_Attack_270"),
+        Animator.StringToHash("Normal_Attack_315")
+    };
+       
+
+
     private SpriteRenderer spriteRenderer;
 
     private int lastDirectionIndex = 0;
@@ -93,35 +110,17 @@ public class PlayerController : MonoBehaviour
 
     public void PlayWalkAnimation(int index)
     {
-        if(index >= 0 && index < animations.Length)
+        if(index >= 0 && index < walkHash.Length)
         {
-            switch (index)
-            {
-                case 0:
-                    animator.Play(walkRightHash);
-                    break;
-                case 1:
-                    animator.Play(walkUpRightHash);
-                    break;
-                case 2:
-                    animator.Play(walkUpHash);
-                    break;
-                case 3:
-                    animator.Play(walkUpLeftHash);
-                    break;
-                case 4:
-                    animator.Play(walkLeftHash);
-                    break;
-                case 5:
-                    animator.Play(walkDownLeftHash);
-                    break;
-                case 6:
-                    animator.Play(walkDownHash);
-                    break;
-                case 7:
-                    animator.Play(walkDownRightHash);
-                    break;
-            }
+            animator.Play(walkHash[index]);
+        }
+    }
+
+    public void PlayAttackAnimation(int index)
+    {
+        if (index >= 0 && index < attackHash.Length)
+        {
+            animator.Play(attackHash[index]);
         }
     }
 
@@ -133,6 +132,81 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //private void LookAtMouse()
+    //{
+    //    Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    //    Vector2 direction = (mousePosition - transform.position).normalized;
+
+    //    // 좌표를 라디안으로 변환
+    //    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+    //    int spriteIndex = GetSpriteIndex(angle);
+
+    //    // 좌표에 맞는 스프라이트로 변경
+    //    spriteRenderer.sprite = directionSprites[spriteIndex];
+    //}
+
+
+    // 8 방향에 대한 스프라이트 index를 반환
+    private int GetSpriteIndex(float angle)
+    {
+        if (angle >= -22.5f && angle < 22.5f)
+            return 0; // 우
+        else if (angle >= 22.5f && angle < 67.5f)
+            return 1; // 우상
+        else if (angle >= 67.5f && angle < 112.5f)
+            return 2; // 상
+        else if (angle >= 112.5f && angle < 157.5f)
+            return 3; // 좌상
+        else if (angle >= 157.5f || angle < -157.5f)
+            return 4; // 좌
+        else if (angle >= -157.5f && angle < -112.5f)
+            return 5; // 좌하
+        else if (angle >= -112.5f && angle < -67.5f)
+            return 6; // 하
+        else // angle >= -67.5f && angle < -22.5f 남은방향
+            return 7; // 우하
+    }
+}
+
+/* 과거의 잔재
+ * 
+    // 너무.. 많아..
+    //private static int walkRightHash = Animator.StringToHash("Walk_Right");
+    //private static int walkUpRightHash = Animator.StringToHash("Walk_UpRight");
+    //private static int walkUpHash = Animator.StringToHash("Walk_Up");
+    //private static int walkUpLeftHash = Animator.StringToHash("Walk_UpLeft");
+    //private static int walkLeftHash = Animator.StringToHash("Walk_Left");
+    //private static int walkDownLeftHash = Animator.StringToHash("Walk_DownLeft");
+    //private static int walkDownHash = Animator.StringToHash("Walk_Down");
+    //private static int walkDownRightHash = Animator.StringToHash("Walk_DownRight");
+
+            //switch (index)
+            //{
+            //    case 0:
+            //        animator.Play(walkRightHash);
+            //        break;
+            //    case 1:
+            //        animator.Play(walkUpRightHash);
+            //        break;
+            //    case 2:
+            //        animator.Play(walkUpHash);
+            //        break;
+            //    case 3:
+            //        animator.Play(walkUpLeftHash);
+            //        break;
+            //    case 4:
+            //        animator.Play(walkLeftHash);
+            //        break;
+            //    case 5:
+            //        animator.Play(walkDownLeftHash);
+            //        break;
+            //    case 6:
+            //        animator.Play(walkDownHash);
+            //        break;
+            //    case 7:
+            //        animator.Play(walkDownRightHash);
+            //        break;
+            //}
 
     //public void Move()
     //{
@@ -160,39 +234,5 @@ public class PlayerController : MonoBehaviour
     //}
 
 
-    //private void LookAtMouse()
-    //{
-    //    Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    //    Vector2 direction = (mousePosition - transform.position).normalized;
 
-    //    // 좌표를 라디안으로 변환
-    //    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-    //    int spriteIndex = GetSpriteIndex(angle);
-
-    //    // 좌표에 맞는 스프라이트로 변경
-    //    spriteRenderer.sprite = directionSprites[spriteIndex];
-    //}
-
-    
-
-    // 8 방향에 대한 스프라이트 index를 반환
-    private int GetSpriteIndex(float angle)
-    {
-        if (angle >= -22.5f && angle < 22.5f)
-            return 0; // 우
-        else if (angle >= 22.5f && angle < 67.5f)
-            return 1; // 우상
-        else if (angle >= 67.5f && angle < 112.5f)
-            return 2; // 상
-        else if (angle >= 112.5f && angle < 157.5f)
-            return 3; // 좌상
-        else if (angle >= 157.5f || angle < -157.5f)
-            return 4; // 좌
-        else if (angle >= -157.5f && angle < -112.5f)
-            return 5; // 좌하
-        else if (angle >= -112.5f && angle < -67.5f)
-            return 6; // 하
-        else // angle >= -67.5f && angle < -22.5f 남은방향
-            return 7; // 우하
-    }
-}
+ */
