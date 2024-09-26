@@ -169,6 +169,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //공격 범위 확인용
+    private void OnDrawGizmos()
+    {
+        Vector2 direction = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
+        Vector2 attackPosition = (Vector2)transform.position + direction* 2f;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(attackPosition, 1f);
+    }
+
+
     private void LookAtMouse()
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);

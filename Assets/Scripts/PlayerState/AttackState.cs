@@ -9,12 +9,14 @@ public class AttackState : IPlayerState
     AnimatorStateInfo stateInfo;
     private bool isAttacking = false;
 
-    Coroutine attackRoutine;
-
-
+    private Coroutine attackRoutine;
+    private Collider2D attackHitbox = null;
+    private float hitboxRadius = 1f;
+    private LayerMask enemyLayer;
     public AttackState(PlayerController player)
     {
         this.player = player;
+        enemyLayer = LayerMask.GetMask("Enemy");
     }
 
     public void Enter()
@@ -60,9 +62,37 @@ public class AttackState : IPlayerState
         lastDirection = player.GetSpriteIndex(angle); //direction index와 같음 나중에 합쳐야함
         player.PlayIdleSprite(lastDirection);
         player.PlayAttackAnimation(lastDirection);
-        
+        CheckAttackHitBox(direction);
         isAttacking = true;
     }
+
+    private void CheckAttackHitBox(Vector2 _direction)
+    {
+        Vector2 attackPosition = (Vector2)player.transform.position + _direction *2f;
+        attackHitbox = Physics2D.OverlapCircle(attackPosition, hitboxRadius, enemyLayer);
+
+        //OnDrawGizmos();
+
+        if (attackHitbox != null)
+        {
+            Debug.Log("적에게 공격 적중");
+
+        }
+        else
+        {
+            Debug.Log("Miss");
+        }
+    }
+
+    private void OnDrawGizmos() //여기서 못씀
+    {
+        Vector2 direction = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - player.transform.position).normalized;
+        Vector2 attackPosition = (Vector2)player.transform.position + direction * 2f;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(attackPosition, hitboxRadius);
+    }
+
 
     IEnumerator AttackRoutine()
     {
@@ -94,6 +124,17 @@ public class AttackState : IPlayerState
 
 
 
+
+    private void DealDamage()
+    {
+
+    }
+
+
+    private void TakeDamage()
+    {
+
+    }
 
 
     //private void LookAtMouse()
