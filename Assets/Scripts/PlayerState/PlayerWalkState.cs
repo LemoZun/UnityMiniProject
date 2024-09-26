@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WalkState : IPlayerState
+public class PlayerWalkState : IState
 {
     private PlayerController player;
     private int lastDirectionIndex = 0;
 
-    public WalkState(PlayerController player)
+    public PlayerWalkState(PlayerController player)
     {
         this.player = player;
     }

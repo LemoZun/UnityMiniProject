@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class AttackState : IPlayerState
+public class PlayerAttackState : IState
 {
     private PlayerController player;
     private int lastDirection;
@@ -13,7 +13,7 @@ public class AttackState : IPlayerState
     private Collider2D attackHitbox = null;
     private float hitboxRadius = 1f;
     private LayerMask enemyLayer;
-    public AttackState(PlayerController player)
+    public PlayerAttackState(PlayerController player)
     {
         this.player = player;
         enemyLayer = LayerMask.GetMask("Enemy");

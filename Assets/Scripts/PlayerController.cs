@@ -5,8 +5,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public enum State { Idle, Walk, Attack, Size }
-    private IPlayerState[] states = new IPlayerState[(int)State.Size];
-    private IPlayerState curState;
+    private IState[] states = new IState[(int)State.Size];
+    private IState curState;
     public float moveSpeed;
     public Rigidbody2D rb;
     public Animator animator;
@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
 
 
 
-    [SerializeField] AnimationClip[] animations = new AnimationClip[8];
+    //[SerializeField] AnimationClip[] animations = new AnimationClip[8];
 
     private
     int[] walkHash = new int[]
@@ -60,9 +60,9 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
-        states[(int)State.Idle] = new IdleState(this);
-        states[(int)State.Walk] = new WalkState(this);
-        states[(int)State.Attack] = new AttackState(this);
+        states[(int)State.Idle] = new PlayerIdleState(this);
+        states[(int)State.Walk] = new PlayerWalkState(this);
+        states[(int)State.Attack] = new PlayerAttackState(this);
         spriteRenderer = GetComponent<SpriteRenderer>();
 
 
@@ -96,7 +96,7 @@ public class PlayerController : MonoBehaviour
         if(newState == State.Idle)
         {
             curState = states[(int)newState];
-            ((IdleState)curState).SetLastDirectionIndex(lastDirectionIndex);
+            ((PlayerIdleState)curState).SetLastDirectionIndex(lastDirectionIndex);
             
         }
         else
@@ -117,7 +117,7 @@ public class PlayerController : MonoBehaviour
         if (newState == State.Idle)
         {
             curState = states[(int)newState];
-            ((IdleState)curState).SetLastDirectionIndex(direction);
+            ((PlayerIdleState)curState).SetLastDirectionIndex(direction);
 
         }
         else

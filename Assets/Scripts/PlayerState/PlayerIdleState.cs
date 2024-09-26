@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class IdleState : IPlayerState
+public class PlayerIdleState : IState
 {
     private PlayerController player;
     private int lastDirectionIndex;
 
-    public IdleState(PlayerController player)
+    public PlayerIdleState(PlayerController player)
     {
         this.player = player;
     }
 
-    public IdleState(PlayerController player, int lastDirectionIndex)
+    public PlayerIdleState(PlayerController player, int lastDirectionIndex)
     {
         this.player = player;
         this.lastDirectionIndex = lastDirectionIndex;

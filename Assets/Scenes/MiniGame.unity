@@ -617,7 +617,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.69462204, y: -1.7798111, z: -10}
+  m_LocalPosition: {x: 0.68515587, y: -1.7797024, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4622,15 +4622,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 8456566709129ad448df2aab99a3cdc5, type: 3}
   - {fileID: 21300000, guid: 815b3e2eeae68ad469de29e5728fbbe5, type: 3}
   - {fileID: 21300000, guid: c244230084322c843934950c99cca32b, type: 3}
-  animations:
-  - {fileID: 7400000, guid: 5145a8b95ee19d2448a267771c492437, type: 2}
-  - {fileID: 7400000, guid: bd4db5daec661d548a8168e9fe394bba, type: 2}
-  - {fileID: 7400000, guid: 7f94199a1e9246b4784963a6bc965e78, type: 2}
-  - {fileID: 7400000, guid: 99df292471341954f84540b6f612d1de, type: 2}
-  - {fileID: 7400000, guid: a218f935266a1774ca775677efd2eaf9, type: 2}
-  - {fileID: 7400000, guid: 9f44ac533d24017429dbfc39fa6c83c9, type: 2}
-  - {fileID: 7400000, guid: 40fcf49e20405e74892d3cd4601fc518, type: 2}
-  - {fileID: 7400000, guid: c6260a4fcaecc2a4b9ad93720b195320, type: 2}
 --- !u!212 &1298218077
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8303,15 +8294,6 @@ MonoBehaviour:
   rb: {fileID: 0}
   animator: {fileID: 0}
   directionSprites:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  animations:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
