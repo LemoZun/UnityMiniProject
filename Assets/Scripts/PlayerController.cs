@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,17 +8,18 @@ public class PlayerController : MonoBehaviour
     public enum State { Idle, Walk, Attack, Size }
     private IState[] states = new IState[(int)State.Size];
     private IState curState;
+
+    //모델을 만든다면 넣어줄것들
     public float moveSpeed;
+    [SerializeField] public int attackPoint;
     public Rigidbody2D rb;
+    //public event Action 
+
+
     public Animator animator;
 
     [SerializeField] Sprite[] directionSprites = new Sprite[8];
-
-
-
-
-    //[SerializeField] AnimationClip[] animations = new AnimationClip[8];
-
+    
     private
     int[] walkHash = new int[]
     {

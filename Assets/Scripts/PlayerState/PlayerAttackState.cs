@@ -22,7 +22,6 @@ public class PlayerAttackState : IState
     public void Enter()
     {
         player.rb.velocity = Vector2.zero;
-        Debug.Log("Attack");
         
         if(isAttacking)
         {
@@ -60,8 +59,10 @@ public class PlayerAttackState : IState
         // 좌표를 라디안으로 변환
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         lastDirection = player.GetSpriteIndex(angle); //direction index와 같음 나중에 합쳐야함
+
         player.PlayIdleSprite(lastDirection);
         player.PlayAttackAnimation(lastDirection);
+
         CheckAttackHitBox(direction);
         isAttacking = true;
     }
@@ -71,12 +72,18 @@ public class PlayerAttackState : IState
         Vector2 attackPosition = (Vector2)player.transform.position + _direction *2f;
         attackHitbox = Physics2D.OverlapCircle(attackPosition, hitboxRadius, enemyLayer);
 
-        //OnDrawGizmos();
-
         if (attackHitbox != null)
         {
-            Debug.Log("적에게 공격 적중");
-
+            IAttackable attackableMonster = attackHitbox.GetComponent<IAttackable>();
+            if(attackableMonster != null)
+            {
+                Debug.Log("적에게 공격 적중");
+                BattleManager.Instance.ApplyDamageToEnemy(attackableMonster, player.attackPoint);
+            }
+            else
+            {
+                Debug.LogError("에러");
+            }
         }
         else
         {
