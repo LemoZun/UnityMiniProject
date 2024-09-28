@@ -63,6 +63,7 @@ public class PlayerAttackState : IState
         player.PlayIdleSprite(lastDirection);
         player.PlayAttackAnimation(lastDirection);
 
+        // µÙ∑π¿Ã∏¶ ¡‡æﬂ«‘
         CheckAttackHitBox(direction);
         isAttacking = true;
     }

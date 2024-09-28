@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour
         curState.Enter();
         Debug.Log("첫 IDLE 상태 진입");
 
-
+        //Time.timeScale = 0.1f;
         
     }
 
@@ -159,9 +159,11 @@ public class PlayerController : MonoBehaviour
     {
         if (index >= 0 && index < attackHash.Length)
         {
-            animator.Play(attackHash[index]);
+            animator.Play(attackHash[index],0,0);
         }
     }
+
+
 
     public void PlayIdleSprite(int index)
     {
