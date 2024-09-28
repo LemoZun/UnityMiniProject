@@ -6,31 +6,24 @@ using UnityEngine.Tilemaps;
 public class GolemGroundSmash : IGolemState
 {
     private GolemController golem;
-    //private GolemModel golemModel;
-    //private GolemView golemView;
     private int startAnimationIndex = 4;
     private int endAnimationIndex = 5;
-    //AnimatorStateInfo stateInfo;
-    
-
-    //[SerializeField] private Tilemap[] dangerZones;
     private int smashCount = 0;
     private PlayerController player;
 
     public GolemGroundSmash(GolemController golem)
     {
         this.golem = golem;
-        //golemModel = golem.golemModel;
-        //golemView = golem.golemView;
     }
 
     public void Enter()
     {
         Debug.Log("Ground Smash 패턴 진입");
+        golem.isPlayingPattern = true;
         golem.golemView.OnAnimationEnd += EndGroundSmash;
         StratGroundSmash();
         Update();
-        // 유니티 이벤트로 애니메이션이 끝날 시 endGroundSmash 애니메이션 재생 // 취소
+       
         //golem.SetState(GolemController.GolemState.Idle);
 
     }
@@ -41,18 +34,20 @@ public class GolemGroundSmash : IGolemState
         //Debug.Log("Ground Smash 시작 애니메이션 종료");
         //golem.SetState(GolemController.GolemState.Idle);
 
+
     }
 
     public void Exit()
     {
+        Debug.Log("GroundSmash Exit");
+        golem.isPlayingPattern = false;
         //golem.SetState(GolemController.GolemState.Idle);
-        EndGroundSmash();
+        //EndGroundSmash();
 
     }
 
     private void StratGroundSmash()
     {
-        // groundSmashStart 애니메이션 재생?
         Debug.Log("Ground Smash 패턴 애니메이션 시작");
         golem.golemView.PlayaAnimation(startAnimationIndex);
 
@@ -75,21 +70,32 @@ public class GolemGroundSmash : IGolemState
 
     private void ActivateDangerZone()
     {
-        golem.dangerZones[smashCount].gameObject.SetActive(true);
-
-        if (IsPlayerInDangerZone(golem.dangerZones[smashCount]))
+        if(smashCount < 4)
         {
-            Debug.Log("플레이어 죽음");
-            //플레이어 죽음
-            //게임오버
+            Debug.Log("맵 부수기 시작");
+            golem.dangerZones[smashCount].gameObject.SetActive(true);
+
+            if (IsPlayerInDangerZone(golem.dangerZones[smashCount]))
+            {
+                Debug.Log("플레이어 죽음");
+                //플레이어 죽음
+                //게임오버
+            }
+            else
+            {
+                Debug.Log($"{smashCount+1}번째 GroundSmash 패턴 완료");
+            }
+
+
+            smashCount++;
+            golem.golemView.OnAnimationEnd -= ActivateDangerZone;
+            golem.SetState(GolemController.GolemState.Idle);
         }
         else
         {
-            Debug.Log("1패턴 완료");
+            Debug.Log("가용 맵이 없어 게임 종료");
         }
-        smashCount++;
-        golem.golemView.OnAnimationEnd -= ActivateDangerZone;
-        golem.SetState(GolemController.GolemState.Idle);
+
 
     }
 

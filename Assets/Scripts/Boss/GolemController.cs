@@ -20,6 +20,8 @@ public class GolemController : MonoBehaviour, IAttackable
     public GolemView golemView;
     public Animator animator;
     Coroutine timeTable;
+    public bool isPlayingPattern = false;
+    int tempCount = 0;
 
     private void Awake()
     {
@@ -63,6 +65,8 @@ public class GolemController : MonoBehaviour, IAttackable
             curState.Exit();
         }
 
+        Debug.Log($"새로운 상태 지정 : {newState}");
+
         curState = states[(int)newState];
         curState.Enter();
     }
@@ -73,23 +77,41 @@ public class GolemController : MonoBehaviour, IAttackable
         {
             timeTable = StartCoroutine(IdleTimer(duration));
         }
+        else
+        {
+            Debug.LogError("이미 타임테이블 존재");
+        }
     }
 
     IEnumerator IdleTimer(float _duration)
     {
+        tempCount++;
+        //Debug.Log(tempCount);
         WaitForSeconds duration = new WaitForSeconds(_duration);
         yield return duration;
-        SetState(GolemState.GroundSmash);
+        Debug.Log(isPlayingPattern);
+        while (!isPlayingPattern)
+        {
+            Debug.Log($"{tempCount} 번째 groundSmash 코루틴에서 진입");
+            SetState(GolemState.GroundSmash);
+            if(timeTable != null)
+            {
+                Debug.Log("코루틴 중단");
+                StopCoroutine(timeTable);
+                timeTable = null;
+            }
+        }
+        
 
         // 로직을 더 추가해야함
         // idle 상태에서만 들어가야하고 idle 상태에서 있던 시간을 재야함
 
     }
 
-    private void OnDestroy()
-    {
-        StopCoroutine(timeTable);
-    }
+    //private void OnDestroy()
+    //{
+    //    StopCoroutine(timeTable);
+    //}
 
 
     private void Die()

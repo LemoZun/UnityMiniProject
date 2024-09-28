@@ -103,6 +103,7 @@ public class GolemView : MonoBehaviour
         if(waitAnimationEnd != null)
         {
             StopCoroutine(waitAnimationEnd);
+            waitAnimationEnd = null;
         }
     }
 
