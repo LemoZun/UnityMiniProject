@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class GolemModel //: IAttackable
 {
-    public event Action OnAttacked;
-    public event Action OnDied;
+    public event Action OnGolemAttacked;
+    public event Action OnGolemDied;
 
     private int hp;
     public int HP { get; set; }
-    private const int MaxHP = 500;
+    private const int MaxHP = 100;
 
     private int mp;
     public int MP { get; private set; }
@@ -28,13 +28,14 @@ public class GolemModel //: IAttackable
         HP -= damage;
         Debug.Log("HP ¾÷µ¥ÀÌÆ® ÇØ¾ßÇÔ ");
 
-        if(OnAttacked != null)
+        if(OnGolemAttacked != null)
         {
-            OnAttacked?.Invoke();
+            OnGolemAttacked?.Invoke();
             if (HP <= 0)
             {
                 //Á×¾úÀ»¶§ Ã³¸®
                 Debug.Log("°ñ·½ Á×À½");
+                OnGolemDied?.Invoke();
             }
         }
         else

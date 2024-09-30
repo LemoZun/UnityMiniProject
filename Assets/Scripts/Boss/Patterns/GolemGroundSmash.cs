@@ -50,22 +50,24 @@ public class GolemGroundSmash : IGolemState
     {
         Debug.Log("Ground Smash 패턴 애니메이션 시작");
         golem.golemView.PlayaAnimation(startAnimationIndex);
-
-        
-        // 애니메이션이 끝나면 바로 뒤에 returnGroundSmash 가 나와야함
+        ActivateAlarm();
     }
 
     private void EndGroundSmash()
     {
         golem.golemView.OnAnimationEnd -= EndGroundSmash;
-        golem.golemView.OnAnimationEnd += ActivateDangerZone;
+
+        //golem.golemView.OnAnimationEnd += ActivateDangerZone;
+        //golem.golemView.OnAnimationEnd += DeactivateAlarm;
         Debug.Log("Ground smash 패턴 종료 시작");
         //곧 무너진다는걸 표현하는 스프라이트 넣어주기?
         golem.golemView.PlayaAnimation(endAnimationIndex);
         golem.golemView.StartCheckingEndRoutine();
 
+        // 여기 이상
+        DeactivateAlarm();
         ActivateDangerZone();
-        
+
     }
 
     private void ActivateDangerZone()
@@ -75,10 +77,10 @@ public class GolemGroundSmash : IGolemState
             Debug.Log("맵 부수기 시작");
             golem.dangerZones[smashCount].gameObject.SetActive(true);
 
-            if (IsPlayerInDangerZone(golem.dangerZones[smashCount]))
+            if (BattleManager.Instance.IsPlayerInDangerZone(golem.dangerZones[smashCount]))
             {
-                Debug.Log("플레이어 죽음");
                 //플레이어 죽음
+                BattleManager.Instance.player.DiedPlayer();
                 //게임오버
             }
             else
@@ -88,23 +90,47 @@ public class GolemGroundSmash : IGolemState
 
 
             smashCount++;
-            golem.golemView.OnAnimationEnd -= ActivateDangerZone;
-            golem.SetState(GolemController.GolemState.Idle);
+            //golem.golemView.OnAnimationEnd -= ActivateDangerZone;
+            //golem.golemView.OnAnimationEnd -= DeactivateAlarm;
+
+            if(golem.isAlive)
+            {
+                golem.SetState(GolemController.GolemState.Idle);
+            }
+            else
+            {
+                Debug.Log("골렘은 이미 죽어서 IDLE 상태에 들어갈 수 없습니다.");
+            }
+            
         }
         else
         {
             Debug.Log("가용 맵이 없어 게임 종료");
         }
-
-
     }
 
-    private bool IsPlayerInDangerZone(Tilemap dangerZone)
+    private void ActivateAlarm()
     {
-        Vector3 PlayerPositoin = BattleManager.Instance.player.transform.position;
-
-        //플레이어의 위치를 셀 좌표로 변환
-        Vector3Int playerCellPosition = dangerZone.WorldToCell(PlayerPositoin);
-        return dangerZone.HasTile(playerCellPosition);
+        if(smashCount < 4)
+        {
+            golem.alarms[smashCount].gameObject.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError("temp");
+        }
     }
+
+    private void DeactivateAlarm()
+    {
+        if (smashCount < 4)
+        {
+            golem.alarms[smashCount].gameObject.SetActive(false);
+        }
+        else
+        {
+            Debug.LogError("temp");
+        }
+    }
+
 }

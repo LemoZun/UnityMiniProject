@@ -19,7 +19,6 @@ public class GolemView : MonoBehaviour
 
     private int[] patternHash = new int[]
     {
-        
         Animator.StringToHash("BossIdle"),
         Animator.StringToHash("BossSkill1"),
         Animator.StringToHash("BossSkill2"),
@@ -46,7 +45,7 @@ public class GolemView : MonoBehaviour
             Debug.Log("dummy");
         }
 
-        golemModel.OnAttacked += UpdateHPUI;
+        golemModel.OnGolemAttacked += UpdateHPUI;
         animator = GetComponent<Animator>();
         UpdateHPUI();
 
@@ -56,7 +55,17 @@ public class GolemView : MonoBehaviour
 
     private void OnDestroy()
     {
-        golemModel.OnAttacked -= UpdateHPUI;
+        golemModel.OnGolemAttacked -= UpdateHPUI;
+        StopAnimation();
+    }
+
+    public void StopAnimation()
+    {
+        if (OnAnimationEnd != null)
+        {
+            OnAnimationEnd = null;
+        }
+            
     }
 
 

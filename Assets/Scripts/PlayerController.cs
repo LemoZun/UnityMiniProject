@@ -2,18 +2,26 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    public enum State { Idle, Walk, Attack, Size }
+    public enum State { Idle, Walk, Attack, Death, Size }
     private IState[] states = new IState[(int)State.Size];
     private IState curState;
 
     //모델을 만든다면 넣어줄것들
+    private int hp;
+    public int HP { get => hp; set => hp = value; }
+    private const int MaxHP = 100;
+    [SerializeField] public Slider hpBar;
     public float moveSpeed;
     [SerializeField] public int attackPoint;
     public Rigidbody2D rb;
-    //public event Action 
+
+
+    public event Action OnPlayerDied;
 
 
     public Animator animator;
@@ -44,6 +52,8 @@ public class PlayerController : MonoBehaviour
         Animator.StringToHash("Normal_Attack_270"),
         Animator.StringToHash("Normal_Attack_315")
     };
+
+    private int deathHash = Animator.StringToHash("Death");
        
 
 
@@ -53,18 +63,23 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        
+        HP = MaxHP;
+        hpBar.value = HP;
     }
 
 
     private void Start()
     {
+        //OnPlayerDied += 
+
+
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
         states[(int)State.Idle] = new PlayerIdleState(this);
         states[(int)State.Walk] = new PlayerWalkState(this);
         states[(int)State.Attack] = new PlayerAttackState(this);
+        states[(int)State.Death] = new PlayerDeathState(this);
         spriteRenderer = GetComponent<SpriteRenderer>();
 
 
@@ -86,6 +101,11 @@ public class PlayerController : MonoBehaviour
         }
         //Move();
         
+    }
+
+    private void OnDestroy()
+    {
+        //OnPlayerDied -=
     }
 
     public void SetState(State newState)
@@ -129,6 +149,35 @@ public class PlayerController : MonoBehaviour
 
         curState.Enter();
     }
+
+    private void TakeDamage(int damage)
+    {
+        HP -= damage;
+        hpBar.value = HP;
+
+        if (HP <= 0)
+        {
+            DiedPlayer();
+        }
+    }
+
+    public void DiedPlayer()
+    {
+        Debug.Log("플레이어 죽음");
+        //hpBar.value = 0;
+        SetState(State.Death);
+        // 이벤트로 다른것도 해야함
+        OnPlayerDied?.Invoke();
+    }
+
+
+
+
+
+
+
+
+
     public Sprite GetSprite(int index)
     {
         if (index >= 0 && index < directionSprites.Length)
@@ -163,14 +212,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
-
     public void PlayIdleSprite(int index)
     {
         if(index >= 0 && index < directionSprites.Length)
         {
             spriteRenderer.sprite = directionSprites[index];
         }
+    }
+
+    public void PlayDeathAnimation()
+    {
+        animator.Play(deathHash,0,0);
     }
 
     //공격 범위 확인용
@@ -182,6 +234,7 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(attackPosition, 1f);
     }
+
 
 
     private void LookAtMouse()
@@ -219,72 +272,3 @@ public class PlayerController : MonoBehaviour
             return 7; // 우하
     }
 }
-
-/* 과거의 잔재
- * 
-    // 너무.. 많아..
-    //private static int walkRightHash = Animator.StringToHash("Walk_Right");
-    //private static int walkUpRightHash = Animator.StringToHash("Walk_UpRight");
-    //private static int walkUpHash = Animator.StringToHash("Walk_Up");
-    //private static int walkUpLeftHash = Animator.StringToHash("Walk_UpLeft");
-    //private static int walkLeftHash = Animator.StringToHash("Walk_Left");
-    //private static int walkDownLeftHash = Animator.StringToHash("Walk_DownLeft");
-    //private static int walkDownHash = Animator.StringToHash("Walk_Down");
-    //private static int walkDownRightHash = Animator.StringToHash("Walk_DownRight");
-
-            //switch (index)
-            //{
-            //    case 0:
-            //        animator.Play(walkRightHash);
-            //        break;
-            //    case 1:
-            //        animator.Play(walkUpRightHash);
-            //        break;
-            //    case 2:
-            //        animator.Play(walkUpHash);
-            //        break;
-            //    case 3:
-            //        animator.Play(walkUpLeftHash);
-            //        break;
-            //    case 4:
-            //        animator.Play(walkLeftHash);
-            //        break;
-            //    case 5:
-            //        animator.Play(walkDownLeftHash);
-            //        break;
-            //    case 6:
-            //        animator.Play(walkDownHash);
-            //        break;
-            //    case 7:
-            //        animator.Play(walkDownRightHash);
-            //        break;
-            //}
-
-    //public void Move()
-    //{
-    //    float horizontalInput = Input.GetAxis("Horizontal");
-    //    float verticalInput = Input.GetAxis("Vertical");
-
-    //    Vector2 moveDirection = new Vector2(horizontalInput, verticalInput).normalized;
-
-        
-
-    //    // 좌표에 맞는 스프라이트로 변경
-    //    if(moveDirection != Vector2.zero)
-    //    {
-    //        float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
-    //        int spriteIndex = GetSpriteIndex(angle);
-    //        spriteRenderer.sprite = directionSprites[spriteIndex];
-    //        animator.Play(animations[spriteIndex].name);
-    //    }
-    //    rb.velocity = moveDirection * moveSpeed;
-
-    //    if (moveDirection == Vector2.zero)
-    //    {
-    //        // 이전 스프라이트를 유지
-    //    }
-    //}
-
-
-
- */
