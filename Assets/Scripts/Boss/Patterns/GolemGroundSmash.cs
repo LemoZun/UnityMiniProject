@@ -93,7 +93,7 @@ public class GolemGroundSmash : IGolemState
             //golem.golemView.OnAnimationEnd -= ActivateDangerZone;
             //golem.golemView.OnAnimationEnd -= DeactivateAlarm;
 
-            if(golem.isAlive)
+            if(golem.isGolemAlive)
             {
                 golem.SetState(GolemController.GolemState.Idle);
             }

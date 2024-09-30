@@ -14,6 +14,7 @@ public class GolemDieState : IGolemState
     public void Enter()
     {
         Debug.Log("°ñ·½ Á×À½");
+        golem.isGolemAlive = false;
         golem.StopAllActions();
        
         golem.golemView.PlayaAnimation(deathAnimationIndex);

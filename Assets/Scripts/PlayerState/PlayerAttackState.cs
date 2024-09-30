@@ -80,6 +80,7 @@ public class PlayerAttackState : IState
             {
                 Debug.Log("적에게 공격 적중");
                 BattleManager.Instance.ApplyDamageToEnemy(attackableMonster, player.attackPoint);
+                SoundManager.Instance.PlaySFX("AttackSound", player.attackSoundClip);
             }
             else
             {
@@ -88,6 +89,7 @@ public class PlayerAttackState : IState
         }
         else
         {
+            SoundManager.Instance.PlaySFX("AttackSound", player.wooshSound);
             Debug.Log("Miss");
         }
     }

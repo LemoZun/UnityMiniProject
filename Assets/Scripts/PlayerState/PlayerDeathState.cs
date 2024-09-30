@@ -15,6 +15,7 @@ public class PlayerDeathState : IState
     public void Enter()
     {
         Debug.Log("Death 상태 진입");
+        player.isPlayerAlive = false;
         player.hpBar.value = 0;
         player.rb.velocity = Vector2.zero;
         player.animator.enabled = true;

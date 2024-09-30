@@ -24,7 +24,7 @@ public class GolemController : MonoBehaviour, IAttackable
     public Animator animator;
     Coroutine timeTable;
     public bool isPlayingPattern = false;
-    public bool isAlive;
+    public bool isGolemAlive;
     int tempCount = 0;
 
     private void Awake()
@@ -35,7 +35,7 @@ public class GolemController : MonoBehaviour, IAttackable
             Debug.LogError("Golem Model 생성 에러");
         }
 
-        isAlive = true;
+        isGolemAlive = true;
        
 
         //일단 여기 보류
@@ -125,7 +125,7 @@ public class GolemController : MonoBehaviour, IAttackable
         WaitForSeconds duration = new WaitForSeconds(_duration);
         yield return duration;
         Debug.Log(isPlayingPattern);
-        while (!isPlayingPattern && isAlive)
+        while (!isPlayingPattern && isGolemAlive && BattleManager.Instance.player.isPlayerAlive)
         {
             Debug.Log($"{tempCount} 번째 groundSmash 코루틴에서 진입");
             SetState(GolemState.GroundSmash);

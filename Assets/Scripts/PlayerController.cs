@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     private IState curState;
 
     //모델을 만든다면 넣어줄것들
+    [SerializeField] public AudioClip attackSoundClip;
+    [SerializeField] public AudioClip wooshSound;
     private int hp;
     public int HP { get => hp; set => hp = value; }
     private const int MaxHP = 100;
@@ -19,7 +21,7 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
     [SerializeField] public int attackPoint;
     public Rigidbody2D rb;
-
+    public bool isPlayerAlive;
 
     public event Action OnPlayerDied;
 
@@ -65,6 +67,7 @@ public class PlayerController : MonoBehaviour
     {
         HP = MaxHP;
         hpBar.value = HP;
+        isPlayerAlive = true;
     }
 
 
@@ -140,7 +143,6 @@ public class PlayerController : MonoBehaviour
         {
             curState = states[(int)newState];
             ((PlayerIdleState)curState).SetLastDirectionIndex(direction);
-
         }
         else
         {
@@ -169,14 +171,6 @@ public class PlayerController : MonoBehaviour
         // 이벤트로 다른것도 해야함
         OnPlayerDied?.Invoke();
     }
-
-
-
-
-
-
-
-
 
     public Sprite GetSprite(int index)
     {
